@@ -11,12 +11,6 @@ class SchemaForSpec extends WordSpec with Matchers {
       """ should compile
     }
 
-    "work for case classes with complete path and default value" in {
-      """
-         SchemaFor[com.sksamuel.avro4s.TestModel.Clazz2]()
-      """ should compile
-    }
-
     "work for case classes with import and no default value" in {
       """
          import com.sksamuel.avro4s.TestModel._
@@ -30,10 +24,41 @@ class SchemaForSpec extends WordSpec with Matchers {
          SchemaFor[Clazz2]()
       """ should compile
     }
+
+    // Should work, it fails
+    "case 01" in {
+      """
+         SchemaFor[com.sksamuel.avro4s.TestModel.Clazz2]()
+      """ should compile
+    }
+
+    // Makes case 01 works....
+    "case 02" in {
+      """
+         import com.sksamuel.avro4s.TestModel.Clazz2
+         SchemaFor[com.sksamuel.avro4s.TestModel.Clazz2]()
+      """ should compile
+    }
+
+    // Should work, it fails
+    "case 03" in {
+      """
+         SchemaFor[com.sksamuel.avro4s.TestModel.Clazz3]()
+      """ should compile
+    }
+
+    // Should work, it fails
+    "case 04" in {
+      """
+         com.sksamuel.avro4s.TestModel.Clazz2
+         SchemaFor[com.sksamuel.avro4s.TestModel.Clazz3]()
+      """ should compile
+    }
   }
 }
 
 object TestModel {
   case class Clazz1(str: String)
   case class Clazz2(str: String = "test")
+  case class Clazz3(strC: Clazz2)
 }
